@@ -1,0 +1,57 @@
+// M_LensFlare | Iris / Aperture 光圈光斑层（自研）
+//
+// 物理原理：
+//   失焦内反射光斑形状由光圈 N 片叶片决定（正 N 边形），边缘有亮环(rim)，
+//   且因镜片色散在径向呈现彩虹分层（衍射光栅效应）。
+//
+// 屏幕空间实现（v4 彩虹光圈散景）：
+//   在多光源「多边形核聚集」基础上(每个亮源铺成实心 N 边形散景)，叠加两项
+//   通用着色器技法(参考公开 lens-flare 材质教程的做法，HLSL 自研)：
+//     1) 径向彩虹色散：按到散景中心的归一半径取彩虹色(Distance→Frac→Spectrum)
+//     2) 轮廓亮环 rim：在多边形轮廓处隆起
+//   → 多光源、每个亮源各自成形为带彩虹边与亮环的 N 边形光圈散景。
+//
+// 参数：
+//   Blades 叶片数(3-12)  Scale 大小   Offset 彩虹色散强度(取绝对值)
+//   RotDeg 旋转(度)      Soft  亮环宽度  Tint  色调
+
+#include "/Plugin/M_LensFlare/MLF_Common.ush"
+
+#ifndef MLF_IRIS
+#define MLF_IRIS 1
+
+#define MLF_IRIS_LAYER(SAMPLE_FN, UV, Blades, Scale, Offset, RotDeg, Soft, Tint, OutColor) \
+{ \
+	OutColor = float3(0, 0, 0); \
+	float MLF_IAcc = 1e-4; \
+	float MLF_Asp = View.ViewSizeAndInvSize.x * View.ViewSizeAndInvSize.w; \
+	float MLF_Seg = 6.28318530 / max((float)Blades, 3.0); \
+	float MLF_Apo = cos(MLF_Seg * 0.5); \
+	float MLF_RimW = max(Soft * 3.0, 0.06); \
+	float MLF_Rainbow = saturate(abs(Offset)); \
+	[loop] for (int ia = 0; ia < 16; ia++) \
+	{ \
+		float MLF_A = 6.28318530 * (float)ia / 16.0 + RotDeg * 0.0174533; \
+		/* 正 N 边形轮廓的归一半径(apothem/cos(到最近边中点夹角)) */ \
+		float MLF_PolyR = MLF_Apo / max(cos(MLF_A - floor(MLF_A / MLF_Seg + 0.5) * MLF_Seg), 0.15); \
+		float2 MLF_Dir = float2(cos(MLF_A) / MLF_Asp, sin(MLF_A)); \
+		[loop] for (int ir = 1; ir <= 4; ir++) \
+		{ \
+			float MLF_T = (float)ir / 4.0; \
+			float2 MLF_SUV = saturate(UV + MLF_Dir * (Scale * MLF_PolyR * MLF_T)); \
+			float3 MLF_S = SAMPLE_FN(MLF_SUV); \
+			/* 实心填充(外缘渐隐) + 轮廓亮环 rim */ \
+			float MLF_Fill = (1.0 - smoothstep(0.65, 1.0, MLF_T)) * 0.45; \
+			float MLF_Rim = exp(-pow((MLF_T - 1.0) / MLF_RimW, 2.0)) * 1.6; \
+			float MLF_W = MLF_Fill + MLF_Rim; \
+			/* 径向彩虹色散(教程 Iris Color: 半径→Frac→Spectrum)，外圈着色更强 */ \
+			float3 MLF_Spec = MLF_Spectrum(frac(MLF_T)); \
+			float3 MLF_Col = lerp(float3(1, 1, 1), MLF_Spec, MLF_Rainbow * saturate(MLF_T)); \
+			OutColor += MLF_S * MLF_W * MLF_Col; \
+			MLF_IAcc += MLF_W; \
+		} \
+	} \
+	OutColor = OutColor / MLF_IAcc * Tint; \
+}
+
+#endif // MLF_IRIS

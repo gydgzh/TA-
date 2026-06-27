@@ -1,0 +1,106 @@
+// M_LensFlare | 公共工具库
+// 亮度计算 / 软阈值高亮提取 / 屏幕边缘衰减 / 光谱渐变 / 光圈多边形 SDF
+// 被所有层级 shader include。
+
+#ifndef MLF_COMMON
+#define MLF_COMMON 1
+
+// Rec.709 亮度
+float MLF_Luminance(float3 Color)
+{
+	return dot(Color, float3(0.2126, 0.7152, 0.0722));
+}
+
+// 软阈值高亮提取（soft knee 二次过渡曲线）
+// 物理意义：只有 HDR 亮度超过 Threshold 的像素才被视为“光源”，
+// Knee 控制阈值附近的渐变宽度，避免硬切导致的闪烁。
+// 这是整套系统“基于亮度阈值、支持任意多光源”的核心。
+float3 MLF_ApplyThreshold(float3 Color, float Threshold, float Knee)
+{
+	float Lum = MLF_Luminance(Color);
+	float Soft = Lum - Threshold + Knee;
+	Soft = clamp(Soft, 0.0, 2.0 * Knee);
+	Soft = Soft * Soft / (4.0 * Knee + 1e-4);
+	float Weight = max(Soft, Lum - Threshold) / max(Lum, 1e-4);
+	return Color * max(Weight, 0.0);
+}
+
+// 屏幕边缘衰减：uv 离中心越远权重越小（题目 Part 5：避免边缘突兀跳变）
+float MLF_EdgeFade(float2 UV, float FadeStart, float FadePower)
+{
+	float Dist = length(UV - 0.5) * 1.41421356; // 0(中心)..1(角)
+	float T = saturate((Dist - FadeStart) / max(1.0 - FadeStart, 1e-4));
+	return pow(saturate(1.0 - T), FadePower);
+}
+
+// 彩虹光谱渐变（鬼影逐个染色用），T in 0..1
+float3 MLF_Spectrum(float T)
+{
+	float3 C;
+	C.r = saturate(abs(T * 6.0 - 3.0) - 1.0);
+	C.g = saturate(2.0 - abs(T * 6.0 - 2.0));
+	C.b = saturate(2.0 - abs(T * 6.0 - 4.0));
+	return C;
+}
+
+// 正多边形 SDF（光圈叶片形状遮罩）
+// P: 局部坐标; Blades: 叶片数; Radius: 半径; Soft: 边缘软度
+float MLF_PolygonMask(float2 P, float Blades, float Radius, float RotationRad, float Soft)
+{
+	float Angle = atan2(P.y, P.x) + RotationRad;
+	float Seg = 6.28318530 / max(Blades, 3.0);
+	float D = cos(floor(0.5 + Angle / Seg) * Seg - Angle) * length(P);
+	return 1.0 - smoothstep(Radius - Soft, Radius + Soft, D);
+}
+
+// ---------------------------------------------------------------------------
+// 以下两个函数移植自项目内置 CinematicLensFlares V4 材质的 Custom 节点。
+// snoise 为 2D 单纯形噪声（源头是 Ashima Arts / Stefan Gustavson 的
+// webgl-noise，MIT 协议公开实现）；fisheye 为其鱼眼 UV 变换。
+// ---------------------------------------------------------------------------
+
+float MLF_Mod289(float x)  { return x - 289.0 * floor(x / 289.0); }
+float2 MLF_Mod289(float2 x) { return x - 289.0 * floor(x / 289.0); }
+float3 MLF_Mod289(float3 x) { return x - 289.0 * floor(x / 289.0); }
+float3 MLF_Permute(float3 x) { return MLF_Mod289(((x * 34.0) + 1.0) * x); }
+
+// 2D 单纯形噪声（CLF 用它做角向"衍射散纹"调制）
+float MLF_SNoise(float2 V, float Seed)
+{
+	float4 C = float4(0.211324865405187 * Seed, 0.366025403784439 * Seed,
+	                  -0.577350269189626 * Seed, 0.024390243902439 * Seed);
+	float2 I  = floor(V + dot(V, C.yy));
+	float2 X0 = V - I + dot(I, C.xx);
+	float2 I1 = (X0.x > X0.y) ? float2(1.0, 0.0) : float2(0.0, 1.0);
+	float4 X12 = X0.xyxy + C.xxzz;
+	X12.xy -= I1;
+	I = MLF_Mod289(I);
+	float3 P = MLF_Permute(MLF_Permute(I.y + float3(0.0, I1.y, 1.0)) + I.x + float3(0.0, I1.x, 1.0));
+	float3 M = max(0.5 - float3(dot(X0, X0), dot(X12.xy, X12.xy), dot(X12.zw, X12.zw)), 0.0);
+	M = M * M;
+	M = M * M;
+	float3 X = 2.0 * frac(P * C.www) - 1.0;
+	float3 H = abs(X) - 0.5;
+	float3 OX = floor(X + 0.5);
+	float3 A0 = X - OX;
+	M *= 1.79284291400159 - 0.85373472095314 * (A0 * A0 + H * H);
+	float3 G;
+	G.x  = A0.x * X0.x + H.x * X0.y;
+	G.yz = A0.yz * X12.xz + H.yz * X12.yw;
+	return 130.0 * dot(M, G);
+}
+
+// 鱼眼 UV 变换（CLF 的 Halo 用它把镜像画面拉伸成环带）
+// F 越小畸变越强；Stretch 控制横纵比
+float2 MLF_Fisheye(float2 UV, float2 F, float2 Stretch)
+{
+	UV = UV * 2.0 - 1.0;
+	float2 Scale = F * atan(1.0 / F);
+	float2 RD = float2(length(UV) * Scale.x, length(UV) * Scale.y);
+	float2 RU = F * tan(RD / F);
+	float Phi = atan2(UV.y, UV.x);
+	UV = (float2(cos(Phi), sin(Phi)) * RU + float2(1.0, 1.0)) * 0.5;
+	return UV;
+}
+
+#endif // MLF_COMMON

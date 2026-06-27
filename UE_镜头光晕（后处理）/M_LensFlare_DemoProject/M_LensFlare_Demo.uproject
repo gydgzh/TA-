@@ -1,0 +1,10 @@
+﻿{
+	"FileVersion": 3,
+	"EngineAssociation": "5.8",
+	"Category": "",
+	"Description": "M_LensFlare demo project — open Content/GameArcade/Scenes/Arcade to see the multi-light lens flare.",
+	"Plugins": [
+		{ "Name": "ModelingToolsEditorMode", "Enabled": true, "TargetAllowList": [ "Editor" ] },
+		{ "Name": "M_LensFlare", "Enabled": true }
+	]
+}

@@ -1,0 +1,10 @@
+﻿{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "M_LensFlare",
+	"Description": "Threshold-based multi-layer AAA lens flare system. Detects all bright regions on screen and generates Ghost / Halo / Anamorphic Streak / Iris / Chromatic Aberration / Starburst layers as a self-developed post-process pipeline.",
+	"Category": "Rendering",
+	"CanContainContent": true,
+	"Modules": [ { "Name": "M_LensFlare", "Type": "Runtime", "LoadingPhase": "PostConfigInit" } ]
+}

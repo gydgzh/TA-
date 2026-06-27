@@ -1,0 +1,45 @@
+// M_LensFlare | Pass 1: 亮度阈值高亮提取（题目 Part 1 核心）
+// 从 HDR 场景颜色中逐像素提取超过阈值的高亮区域。
+// 因为是对“整张画面”做阈值过滤，任意数量、任意颜色的光源都会被
+// 同时检出 —— 多光源支持是该方案的天然属性，而非特殊处理。
+//
+// 材质用法（M_LF_Threshold 的 Custom 节点）:
+//   Inputs: UV(float2), Threshold(float), SoftKnee(float)
+//   #include "/Plugin/M_LensFlare/MLF_Threshold.ush"
+//   return MLF_ThresholdPass(UV, Threshold, SoftKnee);
+
+#include "/Plugin/M_LensFlare/MLF_Common.ush"
+
+#ifndef MLF_THRESHOLD
+#define MLF_THRESHOLD 1
+
+// 注意：SceneTextureLookup 由材质编译环境提供（需在图中放置 SceneTexture 节点）。
+// PPI0 = PostProcessInput0 的索引常量 14。
+//
+// 曝光无关检测（参考 UE 引擎 Bloom 阈值与 Froyok 的 threshold pass 做法）：
+// PostProcessInput0 是 pre-exposed 缓冲，数值随自动曝光/曝光补偿浮动，
+// 直接阈值会导致"压暗场景后阈值失效"。这里先乘
+//   View.OneOverPreExposure * EyeAdaptationLookup()
+// 换算到"显示线性空间"（1.0 ≈ 曝光后的白点）再判阈值，
+// 任何场景、任何曝光状态下同一个 Threshold 数值含义一致；
+// 判定后再除回缓冲空间，下游 Blur/FlareGen/Composite 无需改动。
+float3 MLF_ThresholdPass(float2 UV, float Threshold, float SoftKnee)
+{
+	float3 SceneColor = SceneTextureLookup(UV, 14, false).rgb;
+	// NaN/负值保护，避免个别坏像素被放大成闪点
+	SceneColor = max(SceneColor, 0.0);
+	SceneColor = min(SceneColor, 65000.0);
+
+	float Exposure = View.OneOverPreExposure * EyeAdaptationLookup();
+	Exposure = max(Exposure, 1e-6);
+
+	float3 Display = SceneColor * Exposure;
+	float3 Result  = MLF_ApplyThreshold(Display, Threshold, SoftKnee);
+	// Firefly 钳制（同 UE 自带 Bloom 的做法）：太阳等极端亮源在显示空间
+	// 可达 1e4+，不封顶会让 Ghost/Streak 把全屏涂白。封在 32（≈白点 5 档过曝），
+	// 光晕依然饱满，但不会核爆。
+	Result = min(Result, 32.0);
+	return Result / Exposure;
+}
+
+#endif // MLF_THRESHOLD

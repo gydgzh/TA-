@@ -1,0 +1,34 @@
+// M_LensFlare | Pass 5: 最终合成（自研）
+//
+// 职责：
+//   1. 汇总 FlareGen 输出的各层 Flare（HDR 线性空间）
+//   2. 叠加 Starburst 星芒层
+//   3. 应用屏幕边缘衰减（避免 Flare 在画面边缘突兀截断）
+//   4. Lens Dirt：污渍贴图被 Flare 亮度调制（亮源出现时镜头灰尘“浮现”）
+//   5. 以加法混合回 HDR 场景颜色 —— 在 Tonemapper 之前合成，
+//      Flare 与画面一起过色调映射，天然获得正确的 HDR 高光融合
+//
+// 材质用法（M_LF_Composite 的 Custom 节点）见 README。
+
+#include "/Plugin/M_LensFlare/MLF_Common.ush"
+
+#ifndef MLF_COMPOSITE
+#define MLF_COMPOSITE 1
+
+// FlareColor:   FlareGen 各层合计（已含星芒）
+// SceneColor:   原始场景 HDR 颜色
+// DirtColor:    污渍贴图采样（DirtEnabled=0 时传 0）
+// GlobalTint/GlobalIntensity: 全局色调与总强度
+// EdgeFadeWeight: MLF_EdgeFade(UV, EdgeFadeStart, EdgeFadePower) 的结果
+float3 MLF_CompositePass(
+	float3 SceneColor, float3 FlareColor, float3 DirtColor, float DirtIntensity,
+	float3 GlobalTint, float GlobalIntensity, float EdgeFadeWeight)
+{
+	float3 Flare = FlareColor * GlobalTint * GlobalIntensity * EdgeFadeWeight;
+	// 污渍被 Flare 亮度调制：只有强光出现时灰尘划痕才可见
+	Flare += DirtColor * MLF_Luminance(Flare) * DirtIntensity;
+	// HDR 加法合成（Tonemapper 前）
+	return SceneColor + Flare;
+}
+
+#endif // MLF_COMPOSITE

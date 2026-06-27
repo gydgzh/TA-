@@ -1,0 +1,51 @@
+// M_LensFlare | Glare / Starburst 星芒层（自研）
+//
+// 物理原理：
+//   光通过收缩的光圈时在叶片边缘发生衍射，每条直边产生一对垂直于
+//   该边的衍射光线 → N 叶片光圈产生 N(偶数) / 2N(奇数) 条星芒。
+//
+// 屏幕空间实现（v5 多光源细线版）：
+//   逐像素、沿 RayCount 个放射方向对“高亮缓冲”做拖尾采样 —— 因此
+//   **画面中每一个亮源都会各自放射出星芒（多光源）**，这是题目的核心要求。
+//   细度靠“强 brightpass 浓缩”：只让接近饱和的亮核参与拉丝(参考 John
+//   Chapman / bitsquid 等公开实现的 brightpass 思路，算法自研)。
+//   → 小/点光源本身就小，拉出来即细尖；巨大光源(如太阳满盘)受物理限制
+//     会偏粗，这属正常(屏幕空间拉一个大盘子必然粗)。
+//
+// 参数：RayCount 条数 / RayLen 长度 / RotRad 旋转 / Tint 色调
+// 细度调节：下方 knee(越大越细) 与 pow 指数(越大越细)。
+
+#ifndef MLF_STARBURST
+#define MLF_STARBURST 1
+
+#define MLF_STARBURST_LAYER(SAMPLE_FN, UV, RayCount, RayLen, RotRad, Tint, OutColor) \
+{ \
+	OutColor = float3(0, 0, 0); \
+	const int MLF_StarTaps = 32; \
+	float MLF_Aspect = View.ViewSizeAndInvSize.x * View.ViewSizeAndInvSize.w; \
+	[loop] for (int ry = 0; ry < (int)RayCount; ry++) \
+	{ \
+		float A = 6.28318530 * (float)ry / max((float)RayCount, 1.0) + RotRad; \
+		float2 Dir = float2(cos(A) / MLF_Aspect, sin(A)); \
+		/* 逐光线随机长短(0.7~1.0)，打破规整的"人造星"感 */ \
+		float MLF_RayVar = 0.7 + 0.3 * frac(sin((float)(ry * 13 + 7) * 12.9898) * 43758.5453); \
+		float RayLenV = RayLen * MLF_RayVar; \
+		[loop] for (int tp = 1; tp <= MLF_StarTaps; tp++) \
+		{ \
+			float T = (float)tp / (float)MLF_StarTaps; \
+			float W = pow(1.0 - T, 3.5); \
+			float3 MLF_SPal = 0.5 + 0.5 * cos(6.28318530 * \
+				(0.11 * (float)(ry + 1) + T * 0.55 + float3(0.0, 0.33, 0.67))); \
+			float3 MLF_SCol = lerp(float3(1.0, 1.0, 1.0), MLF_SPal, 0.35); \
+			/* 强 brightpass 浓缩：只让亮核参与拉丝 → 小源上细尖 */ \
+			float3 MLF_SSrc = SAMPLE_FN(UV - Dir * RayLenV * T); \
+			float MLF_SLum = dot(MLF_SSrc, float3(0.299, 0.587, 0.114)); \
+			float MLF_SCore = pow(saturate(MLF_SLum / (MLF_SLum + 0.5)), 8.0); \
+			OutColor += MLF_SSrc * MLF_SCore * W * MLF_SCol; \
+		} \
+	} \
+	/* 能量归一：除以 (光线数 × tap 权重和) */ \
+	OutColor *= Tint / (2.0 * max((float)RayCount, 1.0)); \
+}
+
+#endif // MLF_STARBURST

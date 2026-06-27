@@ -1,0 +1,49 @@
+// M_LensFlare | 贴图驱动 Lens Flare 合成层
+//
+// 合成逻辑为自研；贴图素材来自外部 /Game/LensFlareVFX 包（美术可在材质实例里换贴图改风格，
+// 见 README“资产来源”）。以光源屏幕坐标 SRC 为锚，沿 SRC→屏幕中心 轴线叠加多枚“贴图精灵”：
+//   - Glow   : 光源处辉光        (LightLeak)
+//   - Streak : 光源处横向拉丝    (Streak)
+//   - Ring   : 环形鬼影          (MultiGhostCentre) 围绕光源
+//   - Ghosts : 沿轴一串镜片鬼影  近端小光斑(MultiGhost) → 远端大多边形(ApertureShape)
+// 每枚精灵做 RGB 三通道径向错位采样 → 色散彩虹边（对应参考图 3 的彩虹散色）。
+//
+// 贴图通过 Custom 节点的 TextureObject 输入按名注入：TexGlow/TexStreak/TexRing/TexGhost/
+// TexAperture，对应采样器自动命名为 <名>Sampler。本宏直接引用这些名字，需在 Custom 节点
+// Code 作用域内展开。
+
+#include "/Plugin/M_LensFlare/MLF_Common.ush"
+
+#ifndef MLF_TEXFLARE
+#define MLF_TEXFLARE 1
+
+// 采样一枚精灵。
+//   uv       当前像素 (0..1, 视口空间)
+//   ctr      精灵中心 (0..1)
+//   halfsize 半尺寸 (竖直 UV 单位；x 内部乘 asp 做宽高校正使圆形不被拉扁)
+//   rot      旋转 (弧度)
+//   ca       色散量 (RGB 三通道按 1±ca 缩放采样 → 彩虹边)
+// 贴图均为黑底叠加素材：越界 saturate 采到黑边，叠加无副作用。
+float3 MLF_TexSprite(Texture2D tex, SamplerState samp, float2 uv, float2 ctr, float2 halfsize, float asp, float rot, float ca)
+{
+	float2 d = uv - ctr; d.x *= asp;
+	float cs = cos(rot), sn = sin(rot);
+	float2 r = float2(d.x * cs - d.y * sn, d.x * sn + d.y * cs);
+	float3 outc = float3(0, 0, 0);
+	[unroll] for (int c = 0; c < 3; c++)
+	{
+		float scl = 1.0 + ca * ((float)c - 1.0);            // R:1+ca  G:1  B:1-ca
+		float2 luv = r / max(halfsize * scl, 1e-4) * 0.5 + 0.5;
+		float2 w2 = smoothstep(0.0, 0.05, luv) * smoothstep(0.0, 0.05, 1.0 - luv);
+		float w = w2.x * w2.y;
+		float3 s = Texture2DSample(tex, samp, saturate(luv)).rgb;
+		outc[c] = s[c] * w;
+	}
+	return outc;
+}
+
+// 注：合成逻辑（各精灵的位置/大小/强度）放在 M_LF_FlareGen 的 Custom 节点 Code 内联，
+// 而非本文件的宏——因为编辑器对 .ush include 的改动有缓存不重读的老问题，而 Custom 节点
+// Code 的改动一定触发重编译。本文件只保留稳定不变的 MLF_TexSprite 采样辅助函数。
+
+#endif // MLF_TEXFLARE

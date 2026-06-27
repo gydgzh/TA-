@@ -1,0 +1,47 @@
+// M_LensFlare | Anamorphic Streak 横向拉丝层（自研）
+//
+// 物理原理：
+//   变形宽银幕镜头（Anamorphic Lens）使用柱面镜片做 2x 横向压缩，
+//   柱面只在水平方向有屈光力 → 强光被拉成水平蓝色光线，
+//   即电影感最强的 "anamorphic streak"（《星际穿越》等片的标志性效果）。
+//
+// 屏幕空间实现：
+//   对“模糊后的高亮图”沿水平方向做大半径定向模糊（两侧各 24 tap），
+//   权重从中心向两端按 FalloffPower 衰减；VerticalSquash 提升强度
+//   补偿能量分散，让细长条纹保持可见亮度。
+//
+// 参数：
+//   Length        拉丝半长（占屏宽比例）  FalloffPower  端部衰减
+//   VerticalSquash 能量补偿/压扁感        Tint          色调（经典蓝）
+
+#ifndef MLF_STREAK
+#define MLF_STREAK 1
+
+#define MLF_STREAK_LAYER(SAMPLE_FN, UV, Len, Falloff, Squash, Tint, OutColor) \
+{ \
+	OutColor = float3(0, 0, 0); \
+	/* 40 tap：24 tap 在长拉丝(屏宽50%+)下间隔过大，多光源叠加时 */ \
+	/* 会出现可见的重影/阶梯感（参考 Froyok glare pass 的密集采样思路） */ \
+	const int MLF_StreakTaps = 40; \
+	float TotalW = 0.0; \
+	[loop] for (int st = -MLF_StreakTaps; st <= MLF_StreakTaps; st++) \
+	{ \
+		float T = (float)st / (float)MLF_StreakTaps; /* -1..1 */ \
+		float W = pow(saturate(1.0 - abs(T)), Falloff); \
+		float2 SUV = UV + float2(T * Len, 0.0); \
+		/* CLF Anamorphic Glint: 沿拉丝长度的衍射渐变（两端出彩） */ \
+		float3 MLF_TPal = 0.5 + 0.5 * cos(6.28318530 * \
+			(abs(T) * 0.45 + float3(0.0, 0.33, 0.67))); \
+		float3 MLF_TCol = lerp(float3(1.0, 1.0, 1.0), MLF_TPal, 0.3); \
+		/* ---- 强 brightpass 浓缩(同星芒技法):只让接近饱和的亮核参与拉丝, ---- */ \
+		/* 即便亮源很大,横向条纹也是从亮核拉出的一条细线。knee 0.4、指数 8。 */ \
+		float3 MLF_TSrc = SAMPLE_FN(SUV); \
+		float MLF_TLum = dot(MLF_TSrc, float3(0.299, 0.587, 0.114)); \
+		float MLF_TCore = pow(saturate(MLF_TLum / (MLF_TLum + 0.4)), 8.0); \
+		OutColor += MLF_TSrc * MLF_TCore * W * MLF_TCol; \
+		TotalW += W; \
+	} \
+	OutColor = OutColor / max(TotalW, 1e-4) * Squash * 0.5 * Tint; \
+}
+
+#endif // MLF_STREAK

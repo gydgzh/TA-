@@ -1,0 +1,73 @@
+// M_LensFlare | Ghost 鬼影层（自研）
+//
+// 物理原理：
+//   强光在镜片组表面间多次内反射，每条反射光路在成像面留下一个失焦光斑(鬼影)。
+//   反射光路关于光轴对称 → 鬼影都分布在“光源↔屏幕中心”连线上，光源移动时
+//   鬼影沿该线反向滑动。真实鬼影是光圈散景:有亮环(rim)、外缘彩虹色散，
+//   且越远离中心的鬼影越大越淡。
+//
+// 屏幕空间实现（v5 光圈散景鬼影）：
+//   沿轴布 Count 个鬼影(双链双向)，每个鬼影做轻量光圈聚集:中心 + 一圈
+//   rim 采样 → 带亮环的散景盘；盘径随鬼影序号增大；叠加径向彩虹(教程
+//   Iris Color 技法:外缘取 Spectrum 色)与 RGB 径向色散。与 Iris 层风格统一。
+//   采样量做了节制(中心3 + 环4)以适配集显。
+//
+// 参数：
+//   Count 鬼影数  Spacing 间距(负=反向)  FadePower 距中心衰减
+//   CA 色散量     UseSpectrum 彩虹开关   SpectrumSat 彩虹饱和度  Tint 色调
+
+#include "/Plugin/M_LensFlare/MLF_Common.ush"
+
+#ifndef MLF_GHOST
+#define MLF_GHOST 1
+
+#define MLF_GHOSTS(SAMPLE_FN, UV, Count, Spacing, FadePower, CA, UseSpectrum, SpectrumSat, Tint, OutColor) \
+{ \
+	OutColor = float3(0, 0, 0); \
+	float MLF_GAccum = 1e-4; \
+	float MLF_Asp = View.ViewSizeAndInvSize.x * View.ViewSizeAndInvSize.w; \
+	float2 MLF_IUV = float2(1.0, 1.0) - UV; \
+	[loop] for (int chain = 0; chain < 2; chain++) \
+	{ \
+		float ChainSpacing = (chain == 0) ? Spacing : (Spacing * -0.5); \
+		float2 GhostVec = (float2(0.5, 0.5) - MLF_IUV) * ChainSpacing; \
+		[loop] for (int gh = 0; gh < (int)Count; gh++) \
+		{ \
+			float2 P = MLF_IUV + GhostVec * (float)(gh + 1) * 0.25; \
+			float D = length(float2(0.5, 0.5) - P) / 0.70710678; \
+			float W = pow(saturate(1.0 - D), FadePower); \
+			float GSeed = (float)(gh * 7 + chain * 3); \
+			float3 GhostRand = clamp(float3( \
+				frac(sin(GSeed * 12.9898) * 43758.5453), \
+				frac(sin(GSeed * 78.2330) * 43758.5453), \
+				frac(sin(GSeed * 37.7190) * 43758.5453)), 0.5, 0.9); \
+			/* 散景盘径随鬼影序号增大(远的更大更淡) */ \
+			float MLF_BokR = 0.006 * (1.0 + (float)gh * 0.7); \
+			/* 中心采样(含 RGB 径向色散) */ \
+			float2 CUV = P - 0.5; \
+			float3 SC; \
+			SC.r = SAMPLE_FN(saturate(CUV + 0.5)).r; \
+			SC.g = SAMPLE_FN(saturate(CUV * (1.0 - CA) + 0.5)).g; \
+			SC.b = SAMPLE_FN(saturate(CUV * (1.0 - 2.0 * CA) + 0.5)).b; \
+			float MLF_PhaseC = 0.13 * (float)(gh + 1) + D * 0.3 + (float)chain * 0.5; \
+			float3 MLF_PalC = MLF_Spectrum(frac(MLF_PhaseC)); \
+			float3 MLF_ColC = lerp(float3(1,1,1), MLF_PalC, saturate(UseSpectrum * SpectrumSat) * 0.4); \
+			OutColor += SC * W * 0.45 * MLF_ColC * GhostRand; \
+			MLF_GAccum += W * 0.45; \
+			/* 一圈 rim 采样:形成亮环 + 外缘彩虹更强 */ \
+			[loop] for (int sj = 0; sj < 4; sj++) \
+			{ \
+				float SA = 6.28318530 * (float)sj / 4.0; \
+				float2 RUV = saturate(P + float2(cos(SA) / MLF_Asp, sin(SA)) * MLF_BokR); \
+				float3 SR = SAMPLE_FN(RUV); \
+				float3 MLF_PalR = MLF_Spectrum(frac(MLF_PhaseC + 0.5)); \
+				float3 MLF_ColR = lerp(float3(1,1,1), MLF_PalR, saturate(UseSpectrum * SpectrumSat)); \
+				OutColor += SR * W * 0.7 * MLF_ColR * GhostRand; \
+				MLF_GAccum += W * 0.7; \
+			} \
+		} \
+	} \
+	OutColor = OutColor / MLF_GAccum * (float)Count * Tint; \
+}
+
+#endif // MLF_GHOST

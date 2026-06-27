@@ -1,0 +1,83 @@
+// M_LensFlare | Halo 光晕层（自研）
+//
+// 物理原理：
+//   广角镜组的强曲率镜片会把离轴强光折射成围绕光轴的环状光带，
+//   表现为以画面中心为圆心的彩色光环，光源越靠近画面边缘光环越明显。
+//
+// 屏幕空间实现（John Chapman 方法）：
+//   把每个像素的采样位置沿“朝向屏幕中心”的方向固定推移 Radius，
+//   当光源恰好位于该环带上时像素被点亮 → 形成半径恒定的圆环。
+//   配合宽高比补偿保证光环为正圆。
+//
+// 参数：
+//   Radius   光环半径（UV 空间）   FalloffPower  环带衰减
+//   CA       色散错位量            Tint          色调（默认冷蓝）
+
+#include "/Plugin/M_LensFlare/MLF_Common.ush"
+
+#ifndef MLF_HALO
+#define MLF_HALO 1
+
+// ---------------------------------------------------------------------------
+// 实现说明（v2，算法复刻自项目内置 CinematicLensFlares V4 材质 Custom 节点）：
+//   1. 采样底图 = 鱼眼扭曲的"反转 UV"画面（CLF: fuv = fisheye(1-uv)）
+//      → 光环不再是一圈亮点，而是被拉伸进环带的镜像高光（其标志性观感）
+//   2. 环形遮罩 = length(0.5 - frac(normalize(pv)·Radius / aspect + iuv)) / k
+//      再 pow(Falloff)（CLF 的 hw1/HALO_EDGE 体系）
+//   3. 7 点环形散景柔化（CLF 的 bokeh 双循环，按全分辨率预算缩减）
+//   4. 余弦调色板着色 0.25+0.25·cos(TAU·相位)，相位含角向单纯形噪声调制
+//      （CLF 的 HALO_DIFFRACTION + snoise 散纹）；CA 参数映射为逐采样相位偏移
+// ---------------------------------------------------------------------------
+#define MLF_HALO_LAYER(SAMPLE_FN, UV, Radius, Falloff, CA, Tint, OutColor) \
+{ \
+	OutColor = float3(0, 0, 0); \
+	float MLF_HAccum = 1e-4; \
+	float MLF_Aspect = View.ViewSizeAndInvSize.x * View.ViewSizeAndInvSize.w; \
+	float2 MLF_HIUV = float2(1.0, 1.0) - UV; \
+	/* CLF: pv 居中宽高比校正向量, huv = normalize(pv)·Radius */ \
+	float2 MLF_PV = (UV - 0.5) * float2(MLF_Aspect, 1.0); \
+	float2 MLF_HUV = normalize(MLF_PV + 1e-6) * Radius; \
+	/* CLF: frac 环形遮罩 + 边缘指数 */ \
+	float MLF_HW = length(float2(0.5, 0.5) - frac(MLF_HUV / float2(MLF_Aspect, 1.0) + MLF_HIUV)) / 0.70710678; \
+	MLF_HW = pow(saturate(MLF_HW), Falloff); \
+	/* CLF: 鱼眼镜像底图 */ \
+	float2 MLF_FUV = MLF_Fisheye(MLF_HIUV, float2(0.35, 0.35), float2(1.0, 1.0)); \
+	/* CLF: 角向单纯形噪声衍射散纹 */ \
+	float MLF_HAng = atan2(UV.y - 0.5, UV.x - 0.5) / 6.28318530 + 0.5; \
+	float MLF_HF = MLF_SNoise(float2(MLF_HAng * 2.5, 0.0), 9.0) * 0.5; \
+	MLF_HF = smoothstep(0.1, 0.65, MLF_HF); \
+	/* 19 点三层光圈散景（与 Ghost v3 同机制：外环权重最高 = 亮边缘, */ \
+	/* 外环按 6 叶光圈整形 —— CLF 的 Halo 与 Ghost 共用同一套散景机器） */ \
+	[loop] for (int hj = 0; hj <= 18; hj++) \
+	{ \
+		float2 SUV = MLF_FUV; \
+		float SW = 0.35; \
+		if (hj > 0 && hj <= 6) \
+		{ \
+			float SA = 6.28318530 * ((float)(hj - 1) + 0.5) / 6.0; \
+			SUV = MLF_FUV + float2(cos(SA) / MLF_Aspect, sin(SA)) * 0.008; \
+			SW = 0.45; \
+		} \
+		else if (hj > 6) \
+		{ \
+			float SADeg = 360.0 * (float)(hj - 7) / 12.0; \
+			float EdgeSec = frac(SADeg / 60.0); \
+			float EdgeOff = (EdgeSec > 0.5) ? (1.0 - EdgeSec) : EdgeSec; \
+			float ApR = 0.016 * lerp(0.85, 1.0, pow(saturate(EdgeOff * 2.0), 3.0)); \
+			float SA = SADeg * 0.0174533; \
+			SUV = MLF_FUV + float2(cos(SA) / MLF_Aspect, sin(SA)) * ApR; \
+			SW = 1.0; \
+		} \
+		SUV = saturate(SUV); \
+		float3 S = SAMPLE_FN(SUV); \
+		/* 余弦调色板：噪声散纹 + 逐采样相位偏移（CA 映射）+ 角向渐变 */ \
+		float3 MLF_HPal = 0.25 + 0.25 * cos(6.28318530 * \
+			(0.5 * MLF_HF + CA * 18.0 * (float)(hj + 1) + MLF_HAng + float3(0.0, 0.33, 0.67))); \
+		MLF_HPal = pow(saturate(MLF_HPal) * 2.0, 1.2); \
+		OutColor += S * SW * MLF_HPal; \
+		MLF_HAccum += SW; \
+	} \
+	OutColor = OutColor / MLF_HAccum * MLF_HW * Tint; \
+}
+
+#endif // MLF_HALO

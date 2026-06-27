@@ -1,0 +1,37 @@
+// M_LensFlare | Pass 2/3: 可分离高斯模糊（水平 + 垂直两道）
+// 对高亮提取结果做模糊，让后续所有 Flare 层的光斑边缘柔和、
+// 相机移动时亮斑进出阈值的过渡平滑（题目 Part 5：避免抖动跳变）。
+//
+// SAMPLE_FN: 采样宏, 签名 float3 (float2 uv) —— 由调用方定义,
+//            指向上一道 Pass 的输出（UserSceneTexture）。
+// Dir      : (1,0)=水平道 / (0,1)=垂直道
+// RadiusPx : 模糊半径（像素）
+// InvSize  : 1.0 / 输出分辨率
+
+#ifndef MLF_BLUR
+#define MLF_BLUR 1
+
+// 密集高斯核（中心 + 12 对，半径内均匀铺满）
+// 旧版 9 tap 的间距等于 RadiusPx，半径一大采样点之间出现空洞，
+// 水平×垂直两道叠加后形成可见网格纹。新版把 ±Radius 区间均匀切成
+// 12 段（半径 6px 时间距 0.5px，配合双线性过滤无空洞），
+// 权重用解析高斯 exp(-4.5·t²)（覆盖 ±2.1σ），最后按权重和归一。
+// 宏名保持 MLF_GAUSS9 以兼容现有材质 Custom 节点。
+#define MLF_GAUSS9(SAMPLE_FN, UV, Dir, RadiusPx, InvSize, OutColor) \
+{ \
+	const int MLF_BlurTaps = 12; \
+	OutColor = SAMPLE_FN(UV); \
+	float MLF_TotalW = 1.0; \
+	[loop] for (int gi = 1; gi <= MLF_BlurTaps; gi++) \
+	{ \
+		float T = (float)gi / (float)MLF_BlurTaps; /* 0..1 */ \
+		float W = exp(-4.5 * T * T); \
+		float2 Off = Dir * InvSize * RadiusPx * T; \
+		OutColor += SAMPLE_FN(UV + Off) * W; \
+		OutColor += SAMPLE_FN(UV - Off) * W; \
+		MLF_TotalW += 2.0 * W; \
+	} \
+	OutColor /= MLF_TotalW; \
+}
+
+#endif // MLF_BLUR
