@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom_Environment_A_Ice_My
+  m_Shader: {fileID: 4800000, guid: 27f7597340f4f974580662ed365dca25, type: 3}
+  m_Parent: {fileID: 2100000, guid: f3a8d56ed3e807743a5d82d6eb964c2f, type: 2}
+  m_ModifiedSerializedProperties: 16
+  m_ValidKeywords:
+  - _NORMALMAP
+  m_InvalidKeywords:
+  - _DEBUGFACES_ON
+  - _FLIPBOOKBLENDING_OFF
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 2000
+  stringTagMap:
+    RenderType: Opaque
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BaseMap:
+        m_Texture: {fileID: 2800000, guid: 498ad4a8aa675f64f8905e1a41eead9e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 2800000, guid: adee847bef744d24c9c25502e247c393, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _HeighMap:
+        m_Texture: {fileID: 2800000, guid: 5905c7bc87c9b68499d04076cd071411, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _InnerMap:
+        m_Texture: {fileID: 2800000, guid: 5efd40bd5523cd446b2c48409741354f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MatCap:
+        m_Texture: {fileID: 2800000, guid: 351d737e866cdbd43a06f12b55e3374f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _BumpScale: 0.553
+    - _Height: -1
+    - _HeightTilling: 2.9
+    - _InnerTiling: 2
+    - _MatCapIntensity: 1.48
+    - _Metallic: -1
+    - _Smoothness: 0.99
+    m_Colors:
+    - _BaseColor: {r: 0.6037736, g: 0.6037736, b: 0.6037736, a: 1}
+    - _Color: {r: 0.6037736, g: 0.6037736, b: 0.6037736, a: 1}
+    - _InnerColor: {r: 0.8443396, g: 0.9270342, b: 1, a: 1}
+    - _ScatterColor: {r: 0.6273585, g: 1, b: 0.8048069, a: 1}
+  m_BuildTextureStacks: []

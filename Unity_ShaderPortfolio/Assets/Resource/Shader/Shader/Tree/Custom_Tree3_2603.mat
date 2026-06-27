@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom_Tree3_2603
+  m_Shader: {fileID: 4800000, guid: e72d785c1ac29f945bfc3bb42a6bb65b, type: 3}
+  m_Parent: {fileID: 2100000, guid: 1d42b54b65459d2489d42cbe1c460d9d, type: 2}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _USEUVWINDWEIGHT_ON
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BaseMap:
+        m_Texture: {fileID: 2800000, guid: 4eac71b0cee376940b1fa7b5fb124c16, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 2800000, guid: 9150f8e5bde13344da4e03bcab82cda2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ORMMap:
+        m_Texture: {fileID: 2800000, guid: 549cd9bf7351dcb4092eb34f160eeb60, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ScatterMap:
+        m_Texture: {fileID: 2800000, guid: 241bf53f8ff91f34f94919fdbd713482, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _BumpScale: 0.67
+    - _Cutoff: 0.47
+    - _HeightInfluence: 0.49
+    - _LeafFlutter: 0.023
+    - _Metallic: 0.324
+    - _OcclusionStrength: 0.586
+    - _Scatter: 0.31
+    - _Smoothness: 0.141
+    - _WindFrequency: 0.48
+    - _WindSpeed: 0
+    - _WindStrength: 0.29
+    - _WindTurbulence: 0.25
+    m_Colors:
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _ScatterColor: {r: 1, g: 1, b: 1, a: 1}
+    - _WindDirection: {r: 1, g: 0, b: 0, a: 0}
+  m_BuildTextureStacks: []

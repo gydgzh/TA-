@@ -1,0 +1,44 @@
+# ============ Unity 自动生成 / 可再生目录（不要上传）============
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+[Rr]ecordings/
+
+# Asset meta 仅对应已删除资源时忽略（保留正常 meta）
+/[Aa]ssets/AssetStoreTools*
+/[Aa]ssets/Plugins/Editor/JetBrains*
+
+# 解决方案 / IDE
+.vs/
+.gradle/
+.idea/
+ExportedObj/
+.consulo/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# 系统
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 崩溃日志
+sysinfo.txt
+crashlytics-build.properties

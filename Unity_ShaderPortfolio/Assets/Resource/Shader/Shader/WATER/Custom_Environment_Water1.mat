@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom_Environment_Water1
+  m_Shader: {fileID: 4800000, guid: c174d3a8c3a0ac548a86d26c1463b90a, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BaseMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 2800000, guid: fd56649d63e25ea43ac65c9ef77f4169, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CausticMap:
+        m_Texture: {fileID: 2800000, guid: 30418f7940b9eb54ca2b343d43ae62b9, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FoamMap:
+        m_Texture: {fileID: 2800000, guid: 14c55ed649175884784db6c178f4e654, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _BumpScale: 0.44
+    - _CausticIntensity: 1
+    - _CausticSpeed: 1
+    - _CausticTiling: 1
+    - _DepthGradient: 4
+    - _FlowSpeed: 3.1
+    - _FlowX: -0.2
+    - _FlowY: 0
+    - _FoamDepth: 2.35
+    - _FoamIntensity: 7.4
+    - _FoamTiling: 1
+    - _Metallic: 0
+    - _Occlusion: 0.428
+    - _ReflecionDistortion: 0.518
+    - _ReflectionIntensity: 1.12
+    - _RefractionStrength: 0.657
+    - _Roughness: 0.609
+    - _Tiling: 57
+    - _Tiling1: 4.8
+    - _Tiling2: 181
+    - _WaterClean: 0.38
+    m_Colors:
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Channel_Offset: {r: 0, g: 33, b: 67, a: 0}
+    - _DeepColor: {r: 0.504717, g: 1, b: 0.6285378, a: 1}
+    - _ReflectionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _ScatteringColor: {r: 0.8820755, g: 0.99508035, b: 1, a: 1}
+    - _ShallowColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []

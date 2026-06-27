@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom_Unlit_RaymarchingFog_my
+  m_Shader: {fileID: 4800000, guid: 0d81e3e152c48dc41beaacb11b5a3af0, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _USEHEIGHTGRADIENT_ON
+  - _USEWORLDSPACE_ON
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3000
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _Noise3D:
+        m_Texture: {fileID: 11700000, guid: a2b1df6c51ebf2946a90cfad4e1005cc, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _FadeDistance: 0.65
+    - _FogDensity: 0.25
+    - _HeightGradient: 1.04
+    - _MaxSteps: 83
+    - _NoiseScale: 9.93
+    - _NoiseStrength: 0.448
+    - _StepSize: 0.056
+    - _UseHeightGradient: 1
+    - _UseWorldSpace: 1
+    m_Colors:
+    - _FogColor: {r: 0.8050018, g: 0.82702917, b: 0.8490566, a: 1}
+    - _NoiseSpeed: {r: 0.1, g: 0.2, b: 0.3, a: 0}
+  m_BuildTextureStacks: []
