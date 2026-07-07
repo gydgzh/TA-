@@ -27,6 +27,14 @@ Key 只存在本机（Inspector 序列化 / EditorPrefs / 环境变量），请�
 | 动态物体 | `Dyn_` 前缀命名 = 不参与投影、被画面正确遮挡, 角色可自由行走 | — |
 | 卡通水(可选) | 深浅双色/岸线泡沫/菲涅尔, 程序化噪声零贴图 | — |
 
+## 兼容性与前置条件（务必先读）
+
+- **Unity 6 (6000.x) + URP 工程**。Built-in / HDRP 不支持（shader 与脚本均依赖 URP）
+- **必须先安装包 `com.unity.cloud.gltfast` 再导入本插件**——否则编辑器程序集整体编译失败，所有 Tools/AIGC 菜单不会出现（这是最常见的"导入后没反应"）
+- Renderer 建议 **Forward** 路径：Forward+ 下附加点光在 AI 画面上的染色不生效（主光与阴影正常）。Unity 6 新建 URP 模板默认 Forward+，可在 URP Renderer 资产上切换
+- 场景约定（可选功能）：主方向光命名 `Directional Light`、带 Bloom 的 Volume 命名 `AIGC_MoodVolume` 时，画风预设才能联动它们；名字不同仅这两项静默跳过
+- 需要一个 Tag 为 MainCamera 的相机；首次使用画风功能时 RendererFeature 会自动装配进当前 URP Renderer
+
 ## 安装
 
 1. Unity 6 + URP 工程, 先装包 `com.unity.cloud.gltfast`
