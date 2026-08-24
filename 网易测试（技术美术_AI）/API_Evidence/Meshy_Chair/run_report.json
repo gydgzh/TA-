@@ -1,0 +1,98 @@
+{
+  "schema_version": "1.0",
+  "provider": "meshy",
+  "asset_id": "folding_chair_v001",
+  "input": "D:\\3D_GongzuoLiu\\output\\instance_segmentation\\chair_01.png",
+  "input_sha256": "24371b5d8f1edc4d44fe937b1b10584964e8857edc926c05a4d85e401917dd73",
+  "balance_before": 3103,
+  "planned_max_credits": 42,
+  "automatic_job_retries": 0,
+  "image_edit": {
+    "endpoint": "image-to-image",
+    "ai_model": "gpt-image-2",
+    "prompt": "Reconstruct the reference as one complete freestanding vintage dark navy folding chair. Preserve the broad slightly curved rectangular backrest, matching seat proportions, thin black tubular steel folding frame, crossed side braces, hinge joints and small rubber feet. Conservatively complete every hidden or cropped leg and the rear structure; keep believable folding-chair mechanics and bilateral symmetry. Generate consistent orthographic-like product views of the exact same chair, fully visible from top to feet, centered, even neutral studio lighting, transparent background, no floor, no cast shadow, no extra objects, no stylization.",
+    "generate_multi_view": true,
+    "remove_background": true,
+    "task_id": "01a0320e-819d-7e91-9125-83bd51c1d430",
+    "consumed_credits": 12,
+    "outputs": [
+      {
+        "path": "D:\\3D_GongzuoLiu\\TA_ScenePipeline\\API\\meshy_chair_pilot\\multiview_01.png",
+        "sha256": "9ac11339493d08cbaffb12e5cfbc6b86b41dbf71cb9ebb74345729891c9b2a44"
+      },
+      {
+        "path": "D:\\3D_GongzuoLiu\\TA_ScenePipeline\\API\\meshy_chair_pilot\\multiview_02.png",
+        "sha256": "262e41d159c1638497af3fa8634abedb20bbb83573a813104875f515bdf68400"
+      },
+      {
+        "path": "D:\\3D_GongzuoLiu\\TA_ScenePipeline\\API\\meshy_chair_pilot\\multiview_03.png",
+        "sha256": "4e9804a4367bfa7028bd023c72d9fa32eef9fe9a3c07fcfad983d8f374d6e879"
+      }
+    ]
+  },
+  "image_to_3d": {
+    "endpoint": "multi-image-to-3d",
+    "ai_model": "meshy-7",
+    "should_texture": true,
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "should_remesh": true,
+    "target_polycount": 120000,
+    "save_pre_remeshed_model": true,
+    "target_formats": [
+      "glb"
+    ],
+    "auto_size": true,
+    "origin_at": "bottom",
+    "task_id": "01a0320f-3d85-7adb-ae38-ed45095e3b08",
+    "consumed_credits": 30,
+    "glb": {
+      "path": "D:\\3D_GongzuoLiu\\TA_ScenePipeline\\API\\meshy_chair_pilot\\SM_FoldingChair_Meshy7_120k.glb",
+      "sha256": "0d564b44119e6598eb33361d821585eeb91bc98118a64033134ae9f9ccd15bbb"
+    },
+    "pre_remeshed_glb": {
+      "path": "D:\\3D_GongzuoLiu\\TA_ScenePipeline\\API\\meshy_chair_pilot\\SM_FoldingChair_Meshy7_HighSource.glb",
+      "sha256": "0a10a0dcd58d7ae96d6170e953484dfe48ae7acfa24f2a2d09341f80f461f125"
+    },
+    "thumbnails": {
+      "back": {
+        "path": "D:\\3D_GongzuoLiu\\TA_ScenePipeline\\API\\meshy_chair_pilot\\model_preview_back.png",
+        "sha256": "b5a1a0f2997a505277b364144a5587e657e4dad3ba31c3bf3f5881b7536a2373"
+      },
+      "front": {
+        "path": "D:\\3D_GongzuoLiu\\TA_ScenePipeline\\API\\meshy_chair_pilot\\model_preview_front.png",
+        "sha256": "1fe62e203e0fd396ce544ecc8e8e27a414be4fe85cfad59ec881bf5fb40332eb"
+      },
+      "left": {
+        "path": "D:\\3D_GongzuoLiu\\TA_ScenePipeline\\API\\meshy_chair_pilot\\model_preview_left.png",
+        "sha256": "ca91b8955571a70fe8319621d591eef784a0a3929f1be21be4dcba85d615bf42"
+      },
+      "right": {
+        "path": "D:\\3D_GongzuoLiu\\TA_ScenePipeline\\API\\meshy_chair_pilot\\model_preview_right.png",
+        "sha256": "7abeab0f9dcd9e67206fb44f712e9655ad1b68757b98f58544a8c2930986b037"
+      }
+    },
+    "textures": [
+      {
+        "base_color": {
+          "path": "D:\\3D_GongzuoLiu\\TA_ScenePipeline\\API\\meshy_chair_pilot\\texture_00_base_color.png",
+          "sha256": "353e6743e800ba246e4886f03bd783bdf15f8ae992e190aa4c3ff1e012c93a4f"
+        },
+        "metallic": {
+          "path": "D:\\3D_GongzuoLiu\\TA_ScenePipeline\\API\\meshy_chair_pilot\\texture_00_metallic.png",
+          "sha256": "38f95f8f686f8ce02ca0c08069344404e739450fe88f57f390b501288fa11859"
+        },
+        "roughness": {
+          "path": "D:\\3D_GongzuoLiu\\TA_ScenePipeline\\API\\meshy_chair_pilot\\texture_00_roughness.png",
+          "sha256": "1f8c378a5e75e87dfa3a288dd2d933282c7b923537bbae0f57dea62213282931"
+        },
+        "normal": {
+          "path": "D:\\3D_GongzuoLiu\\TA_ScenePipeline\\API\\meshy_chair_pilot\\texture_00_normal.png",
+          "sha256": "36d3cfc5fbf09666fa789a8c4882bd683b56ee0ce4fb24689090ef51711fddeb"
+        }
+      }
+    ]
+  },
+  "status": "success",
+  "balance_after": 3061
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "provider": "meshy",
+  "operation": "remesh",
+  "source_task_id": "01a031f5-4c22-7ae4-b672-971e336f63c3",
+  "task_id": "01a03206-60cd-727d-8e16-b4d5fff81d12",
+  "topology": "triangle",
+  "target_polycount": 80000,
+  "planned_credits": 5,
+  "balance_before": 3108,
+  "status": "success",
+  "glb": {
+    "path": "D:\\3D_GongzuoLiu\\TA_ScenePipeline\\API\\meshy_crt_pilot\\remesh_80k\\SM_CRT_Meshy7_Remesh80k.glb",
+    "sha256": "96e6af9e4af9e7f878d5ca7846adb240606213c0cd1e617010913d3e3c828c17"
+  },
+  "thumbnail": {
+    "path": "D:\\3D_GongzuoLiu\\TA_ScenePipeline\\API\\meshy_crt_pilot\\remesh_80k\\preview.png",
+    "sha256": "48556a1e1f47a0e7b105f06d18de12c8aa3ef0709905231ad616e498bfd28745"
+  },
+  "alpha_thumbnail": {
+    "path": "D:\\3D_GongzuoLiu\\TA_ScenePipeline\\API\\meshy_crt_pilot\\remesh_80k\\preview_alpha.png",
+    "sha256": "48556a1e1f47a0e7b105f06d18de12c8aa3ef0709905231ad616e498bfd28745"
+  },
+  "consumed_credits": 5,
+  "balance_after": 3103
+}

@@ -1,0 +1,18 @@
+{
+  "id": "01a031f4-6f8b-7942-bb33-bce58c7384f6",
+  "type": "image-to-image",
+  "ai_model": "gpt-image-2",
+  "prompt": "Reconstruct the reference as one complete freestanding late-1980s/1990s beige CRT computer monitor. Preserve the visible shell proportions, thick tapered rear housing, curved front glass, bezel and cream aged-ABS color. Conservatively complete hidden sides, back, underside, ventilation slots, control buttons and a stable integral base. Use a dark neutral unlit glass screen with no text, logo or UI so screen content can be authored later. Generate consistent orthographic-like product views of the exact same object, centered, even neutral studio lighting, transparent background, no table, no cables, no extra objects, no cast shadow, no stylization. Keep all views geometrically consistent for image-to-3D.",
+  "status": "SUCCEEDED",
+  "progress": 100,
+  "created_at": 1787544499660,
+  "started_at": 1787544499670,
+  "finished_at": 1787544541731,
+  "expires_at": 1787803741731,
+  "image_urls": [
+    "https://assets.meshy.ai/61cc4228-2556-406a-b10a-56fd596ebc2a/uploads/multi_view_image_01a031f5-152f-750e-89bc-02e73f7c2af7_part_0.png?Expires=1787803741&Signature=DqEmp9D1PrtVQk89OHqwmyQq7lSP0PkRnWE23FKIa9RHIX9kqfcBNkDuaFYf68Pyx0K2FELhv-KM~U52oScj~RP11Prw2j3ZrdTC0bXCQlJqBlzOeRSVxavTj9eyp0aCsOMB7O2jWj8Sx3DU5bjyhTW8ecpjrqM5ZUnUPbrKyc~sjRLhTN41R2Y8g0mJwUFugFpgyLCQTpYJa5oRl~1FqQTqqcEgheKz8ebEpxckiH8hS2xi7cPyxg1iO~Z~aqJURe3sTroJCWeGahZ9aoVGRoVkKf80H7e7pGryAsc4Nq3q5fIO93ag69trc~l6QyABGiJ0WFJp5TC0X-34jKIIyQ__&Key-Pair-Id=K1VGYTHIYLM9UM",
+    "https://assets.meshy.ai/61cc4228-2556-406a-b10a-56fd596ebc2a/uploads/multi_view_image_01a031f5-152f-750e-89bc-02e73f7c2af7_part_1.png?Expires=1787803741&Signature=WF-~GlwMBzXF7Mb0jnZKc-vTtttP94hPCRiZ~qiD3TcXSVGrldzm6tyvIzKC8ICNHUT9PA52XRToVV9YNmaP7mS8jTFUjAraTaMwUo8GYhMmz4cm0fYQGemXEQeyfOWn88yAuiHQGzJfwEC4zi8qLuKeTObQe50w5fKZiiLfRX3wG~vGela4XkMOz70XXMpHMqZeP07wfXnHNKV6sAR~0VpiNzjc4xZXvWACt8AG8V3YAgyRA7kN1b1vlLQBGx6NIryuTHR47aYdhcTuu6I6fIyJFDB~1DPPV5tDwZK0ryaD9YgGJrD4szFCIyoEE2~mSl0zUWOQMV87YO4n-tB7xg__&Key-Pair-Id=K1VGYTHIYLM9UM",
+    "https://assets.meshy.ai/61cc4228-2556-406a-b10a-56fd596ebc2a/uploads/multi_view_image_01a031f5-152f-750e-89bc-02e73f7c2af7_part_2.png?Expires=1787803741&Signature=cFgltkjPEVhwRGU4AwLy2x1uB7TRoBwqxOpDt3sP3pn~VYijyFy0~fwDeIdV9CHVjtQ309RXIi9GSvRiZLnTlBuAOkLXHgsOMlcq7RZCBaYoGXWKpz6jK2vsOp4KC-2U2EFgX9kjZbKLsPAmbcmaTfwyYZ1wVNIE3j32fxAUG9bG0YWbV9GXFwl9rWixEIbgwRdnrS9oJKmI8tMCxt-kD~8WFMpqY0olRDHmFO4drEsu7gCpcRT62IHYWPcUytKz9pBU6ZdJOu6EFe3gZbnEqkvvP~bd5hajxORfM6dPlGo-SD-LjKKjgJz~gTpMjZxBpxQW-U~O1Fx3lQmNOU0NaA__&Key-Pair-Id=K1VGYTHIYLM9UM"
+  ],
+  "consumed_credits": 12
+}

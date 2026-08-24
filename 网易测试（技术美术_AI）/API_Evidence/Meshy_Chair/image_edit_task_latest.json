@@ -1,0 +1,18 @@
+{
+  "id": "01a0320e-819d-7e91-9125-83bd51c1d430",
+  "type": "image-to-image",
+  "ai_model": "gpt-image-2",
+  "prompt": "Reconstruct the reference as one complete freestanding vintage dark navy folding chair. Preserve the broad slightly curved rectangular backrest, matching seat proportions, thin black tubular steel folding frame, crossed side braces, hinge joints and small rubber feet. Conservatively complete every hidden or cropped leg and the rear structure; keep believable folding-chair mechanics and bilateral symmetry. Generate consistent orthographic-like product views of the exact same chair, fully visible from top to feet, centered, even neutral studio lighting, transparent background, no floor, no cast shadow, no extra objects, no stylization.",
+  "status": "SUCCEEDED",
+  "progress": 100,
+  "created_at": 1787546208040,
+  "started_at": 1787546208045,
+  "finished_at": 1787546249413,
+  "expires_at": 1787805449413,
+  "image_urls": [
+    "https://assets.meshy.ai/61cc4228-2556-406a-b10a-56fd596ebc2a/uploads/multi_view_image_01a0320f-2599-750e-bf26-211edef45406_part_0.png?Expires=1787805449&Signature=PeV5IbRxJ2Q5JK4Y2z~QDV1SeCgxv9lqU2kreDWDnBYjGCPackzRxvxYjUtDKhRNwf9sk0Jt4fX6jVFCugEe0Zufkynuxhbe4jCOHDLT5EYfUZvg~rMA7MmlUdVl99kgX~5OkR5tisdQMt7UbeTa2yqIxCwXTR1VJ1ITk-jG-xo47fJvZYZao~SQ5V9XymX6WKtTVSfkt5B~SpuQGmB8c7g21-wGYl1~qujLTsempqx1i4F22SBdffZ1DrrqtX55DDbjl8~Irv2AJH~lDDRT2rQyZZEBVw28P-OOc1VGco7nuPgl~RKHyXupLUaRK5~tMp3QVeCnI9s0LXrnSk0djQ__&Key-Pair-Id=K1VGYTHIYLM9UM",
+    "https://assets.meshy.ai/61cc4228-2556-406a-b10a-56fd596ebc2a/uploads/multi_view_image_01a0320f-2599-750e-bf26-211edef45406_part_1.png?Expires=1787805449&Signature=YjUcKFL5XFIvAZG~gaaA-Nk8tp7W0xmqHpLaP03V9ldS~1N6EcmQ6-auAt2kFlpAlWBWyxcav7l0WYxRyY4KX9edQZhK~q3tp04nXDsc8F7js4er4~OXFFEtZWbxENrevU9KtWVw2t206dxfOEvRhAPFLtRShxRD01hbe1PHiYdDPQ3R~TbNIwvU0fnxt7DjjKzMrkRDmbeFbrGgJMO0TQhdvP8oV6W0~nPUACg3cI2gCmzdPvRRbmwUivUgUQMKirJrBqwx85I5SoH4NwCPXbN--bOrb89KEKmo~pDewsTLKsycJaJci8rD8CTFyTyg72qjgBReZiwufPOKWbe7dw__&Key-Pair-Id=K1VGYTHIYLM9UM",
+    "https://assets.meshy.ai/61cc4228-2556-406a-b10a-56fd596ebc2a/uploads/multi_view_image_01a0320f-2599-750e-bf26-211edef45406_part_2.png?Expires=1787805449&Signature=UOteAK1avyGXggjkl314yvByhmK-mUWY1cpmzqYJ5PpRDP1aYNvTOvcN8sKdUfYsk~CMgesrjqYeNb9Co9zpTTJhhSqwl00pqzQf6dWhUQZnVwM2-WRSDQS8gC3tDKQ~ItRzUNmoYxxoNYmMXe3Iu2cPCNe5sh6H8J7Cm~XBykbyp~SBdsVaB310sDKylJBk2fV9Z02eoq5AXx7OtaOYjK6oJFCynms6x-2AJxcM03FikwCSMKme7ufm93062sILmMNyMHUzv483Ljsnv3PU-WrFsutd7nPTdM~3503Kf3oXiWcOBl0wXHYL6OGQimunR-5j7AWA7ivyyLrFv3KwVw__&Key-Pair-Id=K1VGYTHIYLM9UM"
+  ],
+  "consumed_credits": 12
+}

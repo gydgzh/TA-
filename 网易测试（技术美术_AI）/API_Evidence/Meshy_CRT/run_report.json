@@ -1,0 +1,91 @@
+{
+  "schema_version": "1.0",
+  "provider": "meshy",
+  "input": "D:\\3D_GongzuoLiu\\TA_ScenePipeline\\API\\roboflow_sam3_crt_test\\00_crt_computer_monitor_including_the_entire_plasti_07_crop.png",
+  "input_sha256": "212190cb9e388adb2314867c90ec0cc96eb1bb6a18036bb7f9581aedeca82b79",
+  "balance_before": 3150,
+  "planned_max_credits": 42,
+  "automatic_retries": 0,
+  "image_edit": {
+    "endpoint": "image-to-image",
+    "ai_model": "gpt-image-2",
+    "prompt": "Reconstruct the reference as one complete freestanding late-1980s/1990s beige CRT computer monitor. Preserve the visible shell proportions, thick tapered rear housing, curved front glass, bezel and cream aged-ABS color. Conservatively complete hidden sides, back, underside, ventilation slots, control buttons and a stable integral base. Use a dark neutral unlit glass screen with no text, logo or UI so screen content can be authored later. Generate consistent orthographic-like product views of the exact same object, centered, even neutral studio lighting, transparent background, no table, no cables, no extra objects, no cast shadow, no stylization. Keep all views geometrically consistent for image-to-3D.",
+    "generate_multi_view": true,
+    "remove_background": true,
+    "task_id": "01a031f4-6f8b-7942-bb33-bce58c7384f6",
+    "consumed_credits": 12,
+    "outputs": [
+      {
+        "path": "D:\\3D_GongzuoLiu\\TA_ScenePipeline\\API\\meshy_crt_pilot\\multiview_01.png",
+        "sha256": "905890efab6d411bc6ecd4e2aab9a37dc5201a0d0436df8bf59f1e8910244ec3"
+      },
+      {
+        "path": "D:\\3D_GongzuoLiu\\TA_ScenePipeline\\API\\meshy_crt_pilot\\multiview_02.png",
+        "sha256": "b6129f4ede63cb4cb5e991c1b81fa5a06296cdb582fbb16d253d590e09ef4bdf"
+      },
+      {
+        "path": "D:\\3D_GongzuoLiu\\TA_ScenePipeline\\API\\meshy_crt_pilot\\multiview_03.png",
+        "sha256": "ae64f9490e312708b5f5d9a8d5d4b1b395ed20aed0fae9121cecf5622e081e40"
+      }
+    ]
+  },
+  "image_to_3d": {
+    "endpoint": "multi-image-to-3d",
+    "ai_model": "meshy-7",
+    "should_texture": true,
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "should_remesh": false,
+    "target_formats": [
+      "glb"
+    ],
+    "auto_size": true,
+    "origin_at": "bottom",
+    "task_id": "01a031f5-4c22-7ae4-b672-971e336f63c3",
+    "consumed_credits": 30,
+    "glb": {
+      "path": "D:\\3D_GongzuoLiu\\TA_ScenePipeline\\API\\meshy_crt_pilot\\SM_CRT_Meshy7_Raw.glb",
+      "sha256": "df19ca7ad2c9c1d9fef2fc07cd1eca78e5ba6260ee6790dca7d38570c534d3a4"
+    },
+    "thumbnails": {
+      "back": {
+        "path": "D:\\3D_GongzuoLiu\\TA_ScenePipeline\\API\\meshy_crt_pilot\\model_preview_back.png",
+        "sha256": "18c588c49df2408b98b9415f385063fa36aa909dddd43db25c7b13cddf34140d"
+      },
+      "front": {
+        "path": "D:\\3D_GongzuoLiu\\TA_ScenePipeline\\API\\meshy_crt_pilot\\model_preview_front.png",
+        "sha256": "77604d014652d6ea4a68e8bedca009591056b1dcf76daa812a42d76050b449d3"
+      },
+      "left": {
+        "path": "D:\\3D_GongzuoLiu\\TA_ScenePipeline\\API\\meshy_crt_pilot\\model_preview_left.png",
+        "sha256": "5f21a7bddec136410e0b4aeb0cff83e864880ae18f8b29b7a3f3229b77954d5e"
+      },
+      "right": {
+        "path": "D:\\3D_GongzuoLiu\\TA_ScenePipeline\\API\\meshy_crt_pilot\\model_preview_right.png",
+        "sha256": "405105b49286100f25e868e611a81c1d556d61190f096872603940d38095950f"
+      }
+    },
+    "textures": [
+      {
+        "base_color": {
+          "path": "D:\\3D_GongzuoLiu\\TA_ScenePipeline\\API\\meshy_crt_pilot\\texture_00_base_color.png",
+          "sha256": "e1c218356ae5c8ba79a53a48816f91a34e4a79466267f4af6417c8c9c574fcab"
+        },
+        "metallic": {
+          "path": "D:\\3D_GongzuoLiu\\TA_ScenePipeline\\API\\meshy_crt_pilot\\texture_00_metallic.png",
+          "sha256": "4f10e993c989dcd8b1f116dc2dde5b05646d96db467338f186cbdb0cdbf3cc0a"
+        },
+        "roughness": {
+          "path": "D:\\3D_GongzuoLiu\\TA_ScenePipeline\\API\\meshy_crt_pilot\\texture_00_roughness.png",
+          "sha256": "d9f8a16839f53d3fcca2340de246baf670a6310c15128b89fc22e6ca0f572ee9"
+        },
+        "normal": {
+          "path": "D:\\3D_GongzuoLiu\\TA_ScenePipeline\\API\\meshy_crt_pilot\\texture_00_normal.png",
+          "sha256": "48f7f9da4f750748729d511584a487c0f96ee56dc053dd5d597badf223072287"
+        }
+      }
+    ]
+  },
+  "status": "success",
+  "balance_after": 3108
+}
